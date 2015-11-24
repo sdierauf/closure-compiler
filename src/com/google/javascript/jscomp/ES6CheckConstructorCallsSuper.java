@@ -9,7 +9,7 @@ import com.google.javascript.rhino.Node;
  * @author sdierauf
  *
  */
-public final class ES6CheckConstructorCallsSuper implements NodeTraversal.Callback {
+public final class ES6CheckConstructorCallsSuper implements CompilerPass, NodeTraversal.Callback {
 	
 	static final DiagnosticType NO_SUPER_CALL = DiagnosticType.error(
 		      "JSC_NO_SUPER_CALL",
@@ -25,10 +25,12 @@ public final class ES6CheckConstructorCallsSuper implements NodeTraversal.Callba
 	
 	@Override
 	public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
+		System.out.println("calling shouldTraverse!");
 		// Should traverse if it's a class, extends a parent, and has a constructor
 		if (n.isClass()) {
 		    Node superClass = n.getFirstChild().getNext();
 		    if (superClass.isEmpty()) {
+				System.out.println("returning false");
 		    	return false;
 		    }
 			for (Node member = n.getLastChild().getFirstChild();
@@ -37,10 +39,12 @@ public final class ES6CheckConstructorCallsSuper implements NodeTraversal.Callba
 				if (member.isMemberFunctionDef() && member.getString().equals("constructor")) {
 					// found constructor
 					this.constructorMember = member;
+					System.out.println("returning true!");
 					return true;
 				}
 			}
 		}
+		System.out.println("n wasnt a class");
 		return false;
 	}
 
@@ -55,6 +59,11 @@ public final class ES6CheckConstructorCallsSuper implements NodeTraversal.Callba
 			compiler.report(JSError.make(n, NO_SUPER_CALL));
 		}
 		
+	}
+
+	@Override
+	public void process(Node externs, Node root) {
+		NodeTraversal.traverseEs6(compiler, root, this);
 	}
 
 }
