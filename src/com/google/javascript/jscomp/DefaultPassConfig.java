@@ -493,6 +493,15 @@ public final class DefaultPassConfig extends PassConfig {
     if (options.collapseProperties) {
       passes.add(collapseProperties);
     }
+    
+    passes.add (
+            new PassFactory("helloWorld", true) {
+              @Override
+              protected CompilerPass create(AbstractCompiler compiler) {
+                 return new HelloWorld(compiler);
+              }
+            }
+         );
 
     if (options.inferConsts) {
       passes.add(inferConsts);
