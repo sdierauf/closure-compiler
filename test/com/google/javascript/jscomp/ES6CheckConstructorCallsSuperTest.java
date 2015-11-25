@@ -1,27 +1,66 @@
 package com.google.javascript.jscomp;
 
-public class ES6CheckConstructorCallsSuperTest extends Es6CompilerTestCase {
+public class Es6CheckConstructorCallsSuperTest extends Es6CompilerTestCase {
 	  
 	@Override
 	protected CompilerPass getProcessor(Compiler compiler) {
 		// TODO Auto-generated method stub
-		return new ES6CheckConstructorCallsSuper(compiler);
+		return new Es6CheckConstructorCallsSuper(compiler);
 	}
 	
 	public void testCompilerProducesError() {
+		System.out.println("should produce error");
 		String js = ""
-				+ "class A {"
-				+ "  constructor() {"
-				+ "    this.a = 'a'"
-				+ "  } "
-				+ "}"
+//				+ "class A {"
+//				+ "  constructor() {"
+//				+ "    this.a = 'a';"
+//				+ "  } "
+//				+ "}"
 				+ "class B extends A {"
 				+ "  constructor() {"
-				+ "    this.b = 'b'"
+				       // should call super here
+				+ "    this.b = 'b';"
 				+ "  }"
 				+ "}";
-		testErrorEs6(js, ES6CheckConstructorCallsSuper.NO_SUPER_CALL);
+		testErrorEs6(js, Es6CheckConstructorCallsSuper.NO_SUPER_CALL);
 	}
+//	
+	public void testCompilerSHOULDFAIL() {
+		System.out.println("should not produce error");
+		String js = ""
+//				+ "class A {"
+//				+ "  constructor() {"
+//				+ "    this.a = 'a'"
+//				+ "  } "
+//				+ "}"
+				+ "class B extends A {"
+				+ "  constructor() {"
+				+ "    super();"
+				+ "  }"
+				+ "}";
+		testErrorEs6(js, Es6CheckConstructorCallsSuper.NO_SUPER_CALL);
+	}
+	
+//	
+//	public void testCompilerSHOULDFAIL_CF() {
+//		String js = ""
+//				+ "class A {"
+//				+ "  constructor() {"
+//				+ "    this.a = 'a'"
+//				+ "  } "
+//				+ "}"
+//				+ "class B extends A {"
+//				+ "  constructor() {"
+//				+ "    if (true) {"
+//				+ "      super();"
+//				+ "    } else {"
+//				+ "      super();"
+//				+ "    }"
+//				+ "    this.b = 'b';"
+//				+ "  }"
+//				+ "}";
+//		testErrorEs6(js, Es6CheckConstructorCallsSuper.NO_SUPER_CALL);
+//	}
 	
 
 }
